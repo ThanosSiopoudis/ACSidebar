@@ -5,6 +5,7 @@ using CoreGraphics;
 
 namespace ACSidebar
 {
+    [Register("ACSidebarItemCell")]
     public class ACSidebarItemCell : NSButtonCell
     {
         private static float kSelectionCornerRadius = 5.0f;
@@ -51,6 +52,7 @@ namespace ACSidebar
             {
                 this.shadow.Set ();
                 CGRect imgRect = frame.Inset ((frame.Size.Width - image.Size.Width) / 2.0f, (frame.Size.Height - image.Size.Height) / 2.0f);
+                image.Flipped = true;
                 image.DrawInRect (imgRect, CGRect.Empty, NSCompositingOperation.SourceOver, 1.0f);
             }
             NSGraphicsContext.GlobalRestoreGraphicsState ();
