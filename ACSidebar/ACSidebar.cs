@@ -18,10 +18,14 @@ namespace ACSidebar
         private Selector _action;
 
         public ACSidebar () : base ()
-        {}
+        {
+            this.Initialise ();
+        }
 
         public ACSidebar (IntPtr handle) : base (handle)
-        {}
+        {
+            this.Initialise ();
+        }
 
         public ACSidebar (NSCoder coder) : base (coder)
         {
@@ -150,7 +154,7 @@ namespace ACSidebar
             }
         }
 
-        private int SelectedIndex {
+        public int SelectedIndex {
             get {
                 ACSidebarItemCell cell = this.SelectedItem;
                 return Array.IndexOf (this.matrix.Cells, cell);
@@ -174,7 +178,7 @@ namespace ACSidebar
             }
         }
 
-        private bool AllowsEmptySelection {
+        public bool AllowsEmptySelection {
             get {
                 return this.matrix.AllowsEmptySelection;
             }
@@ -188,16 +192,16 @@ namespace ACSidebar
             }
         }
 
-        public ACSidebarItemCell AddItem(NSImage image, NSObject target, EventHandler e) {
+        public ACSidebarItemCell AddItem(NSImage image, NSObject target, Selector sel) {
             ACSidebarItemCell cell = new ACSidebarItemCell(image);
             cell.Target = target;
-            cell.Activated += e;
+            cell.Action = sel;
 
             return cell;
         }
 
-        public ACSidebarItemCell AddItem(NSImage image, NSImage alternateImage, NSObject target, EventHandler e) {
-            ACSidebarItemCell cell = this.AddItem (image, target, e);
+        public ACSidebarItemCell AddItem(NSImage image, NSImage alternateImage, NSObject target, Selector sel) {
+            ACSidebarItemCell cell = this.AddItem (image, target, sel);
             cell.AlternateImage = alternateImage;
 
             return cell;
@@ -251,6 +255,9 @@ namespace ACSidebar
         #region ACSidebar Target Action
         [Action("MatrixCallback:")]
         public void MatrixCallback(NSObject sender) {
+            if (this.Target == null) {
+                return;
+            }
             if (this.Target.RespondsToSelector(this.Action)) {
                 this.Target.PerformSelector (this.Action, this);
             }
