@@ -7,27 +7,36 @@ namespace ACSidebar
 {
     public class ACSidebarItemCell : NSButtonCell
     {
-        private static float kSelectionCornerRadius = 5.0;
-        private static float kSelectionWidth = 2.0;
-        private static NSColor kSelectionColour = NSColor.FromCalibratedRgba(0.12, 0.49, 0.93, 1.0);
-        private static NSColor kSelectionHighlightColour = NSColor.FromCalibratedRgba(0.12, 0.49, 0.93, 0.7);
+        private static float kSelectionCornerRadius = 5.0f;
+        private static float kSelectionWidth = 2.0f;
+        private static NSColor kSelectionColour = NSColor.FromCalibratedRgba(0.12f, 0.49f, 0.93f, 1.0f);
+        private static NSColor kSelectionHighlightColour = NSColor.FromCalibratedRgba(0.12f, 0.49f, 0.93f, 0.7f);
         public NSShadow shadow {
             get {
                 NSShadow shadow = new NSShadow ();
                 shadow.ShadowOffset = new CGSize (0, -1);
                 shadow.ShadowColor = NSColor.Black;
-                shadow.ShadowBlurRadius = 3.0;
+                shadow.ShadowBlurRadius = 3.0f;
 
                 return shadow;
             }
         }
-        public ACSidebarItemCell ()
-        {
-        }
+
+        public ACSidebarItemCell (NSImage image) : base (image)
+        {}
+
+        public ACSidebarItemCell (IntPtr handle) : base(handle)
+        {}
+
+        public ACSidebarItemCell (NSCoder coder) : base(coder)
+        {}
+
+        public ACSidebarItemCell () : base ()
+        {}
 
         public void DrawImageWithFrame(CGRect frame, NSView controlView) {
             NSImage image;
-            if ((this.Highlighted || this.State == NSCellStateValue.On) && this.AlternateImage) {
+            if ((this.Highlighted || this.State == NSCellStateValue.On) && this.AlternateImage != null) {
                 image = this.AlternateImage;
             }
             else {
@@ -41,8 +50,8 @@ namespace ACSidebar
             NSGraphicsContext.GlobalSaveGraphicsState ();
             {
                 this.shadow.Set ();
-                CGRect imgRect = frame.Inset ((frame.Size.Width - image.Size.Width) / 2.0, (frame.Size.Height - image.Size.Height) / 2.0);
-                image.DrawInRect (imgRect, CGRect.Empty, NSCompositingOperation.SourceOver, 1.0);
+                CGRect imgRect = frame.Inset ((frame.Size.Width - image.Size.Width) / 2.0f, (frame.Size.Height - image.Size.Height) / 2.0f);
+                image.DrawInRect (imgRect, CGRect.Empty, NSCompositingOperation.SourceOver, 1.0f);
             }
             NSGraphicsContext.GlobalRestoreGraphicsState ();
         }
