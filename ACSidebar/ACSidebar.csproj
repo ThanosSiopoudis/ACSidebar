@@ -10,7 +10,6 @@
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <AssemblyName>ACSidebar</AssemblyName>
     <UseXamMacFullFramework>true</UseXamMacFullFramework>
-    <ReleaseVersion>0.1.0b3</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
