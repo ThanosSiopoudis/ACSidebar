@@ -242,6 +242,11 @@ namespace ACSidebar
             this.matrix.SizeToCells ();
 
             CGRect newSize = this.matrix.Frame;
+
+			if (this.EnclosingScrollView == null) {
+				return;
+			}
+
             if (this.EnclosingScrollView.ContentView.Frame.Size.Height > newSize.Size.Height) {
                 CGSize tmpSize = new CGSize (newSize.Size.Width, this.EnclosingScrollView.ContentView.Frame.Size.Height);
                 newSize.Size = tmpSize;
