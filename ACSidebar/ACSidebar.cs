@@ -3,7 +3,6 @@ using AppKit;
 using Foundation;
 using CoreGraphics;
 using ObjCRuntime;
-using System.Runtime.InteropServices;
 
 namespace ACSidebar
 {
@@ -17,43 +16,45 @@ namespace ACSidebar
         private NSObject _target;
         private Selector _action;
 
-        public ACSidebar () : base ()
+        public ACSidebar() : base()
         {
-            this.Initialise ();
+            this.Initialise();
         }
 
-        public ACSidebar (IntPtr handle) : base (handle)
+        public ACSidebar(IntPtr handle) : base(handle)
         {
-            this.Initialise ();
+            this.Initialise();
         }
 
-        public ACSidebar (NSCoder coder) : base (coder)
+        public ACSidebar(NSCoder coder) : base(coder)
         {
-            this.Initialise ();
+            this.Initialise();
         }
 
-        public ACSidebar (CGRect frameRect) : base (frameRect)
+        public ACSidebar(CGRect frameRect) : base(frameRect)
         {
-            this.Initialise ();
-        }
-            
-        protected override void Dispose (bool disposing)
-        {
-            NSNotificationCenter.DefaultCenter.RemoveObserver (this);
-            base.Dispose (disposing);
+            this.Initialise();
         }
 
-        private void Initialise() {
-            this.AddMatrix ();
-        }
-
-        public override void AwakeFromNib ()
+        protected override void Dispose(bool disposing)
         {
-            this.ResizeMatrix (null);
-            this.InitialiseScrollView ();
+            NSNotificationCenter.DefaultCenter.RemoveObserver(this);
+            base.Dispose(disposing);
         }
 
-        private void InitialiseScrollView() {
+        private void Initialise()
+        {
+            this.AddMatrix();
+        }
+
+        public override void AwakeFromNib()
+        {
+            this.ResizeMatrix(null);
+            this.InitialiseScrollView();
+        }
+
+        private void InitialiseScrollView()
+        {
             this.EnclosingScrollView.DrawsBackground = true;
 
             // Style scroll view
@@ -65,134 +66,164 @@ namespace ACSidebar
 
             NSClipView clipView = this.EnclosingScrollView.ContentView;
             clipView.PostsBoundsChangedNotifications = true;
-            NSNotificationCenter.DefaultCenter.AddObserver (NSView.BoundsChangedNotification, ResizeMatrix, clipView);
+            NSNotificationCenter.DefaultCenter.AddObserver(NSView.BoundsChangedNotification, ResizeMatrix, clipView);
         }
 
-        private void AddMatrix() {
-            this.matrix = new NSMatrix (this.Frame, NSMatrixMode.Radio, ACSidebar.CellClass, 0, 1);
+        private void AddMatrix()
+        {
+            this.matrix = new NSMatrix(this.Frame, NSMatrixMode.Radio, ACSidebar.CellClass, 0, 1);
             this.matrix.AllowsEmptySelection = kDefaultAllowsEmptySelection;
-            this.matrix.CellSize = new CGSize (62, 62);
+            this.matrix.CellSize = new CGSize(62, 62);
+            this.matrix.Activated += this.onMatrixCallback;
 
-            this.ResizeMatrix (null);
-            this.AddSubview (this.matrix);
+            this.ResizeMatrix(null);
+            this.AddSubview(this.matrix);
         }
 
         #region Scroll View
-        public NSColor BackgroundColour {
-            get {
+        public NSColor BackgroundColour
+        {
+            get
+            {
                 return this.EnclosingScrollView.BackgroundColor;
             }
-            set {
+            set
+            {
                 this.EnclosingScrollView.BackgroundColor = value;
             }
         }
 
-        public NSScrollerKnobStyle ScrollerKnobStyle {
-            get {
+        public NSScrollerKnobStyle ScrollerKnobStyle
+        {
+            get
+            {
                 return this.EnclosingScrollView.ScrollerKnobStyle;
             }
-            set {
+            set
+            {
                 this.EnclosingScrollView.ScrollerKnobStyle = value;
             }
         }
         #endregion
 
         #region Key Handling
-        public override bool AcceptsFirstResponder ()
+        public override bool AcceptsFirstResponder()
         {
             return true;
         }
 
-        public override void KeyDown (NSEvent theEvent)
+        public override void KeyDown(NSEvent theEvent)
         {
-            switch (theEvent.KeyCode) {
-            case 126:
-                this.SelectPreviousItem ();
-                break;
-            case 125:
-                this.SelectNextItem ();
-                break;
-            case 53:
-                this.DeselectAllItems ();
-                break;
-            default:
-                base.KeyDown (theEvent);
-                break;
+            switch (theEvent.KeyCode)
+            {
+                case 126:
+                    this.SelectPreviousItem();
+                    break;
+                case 125:
+                    this.SelectNextItem();
+                    break;
+                case 53:
+                    this.DeselectAllItems();
+                    break;
+                default:
+                    base.KeyDown(theEvent);
+                    break;
             }
         }
 
-        public void DeselectAllItems() {
-            this.matrix.DeselectSelectedCell ();
+        public void DeselectAllItems()
+        {
+            this.matrix.DeselectSelectedCell();
         }
 
-        public void SelectNextItem() {
-            this.SelectNeighbourItemWithValue (1);
+        public void SelectNextItem()
+        {
+            this.SelectNeighbourItemWithValue(1);
         }
 
-        public void SelectPreviousItem() {
-            this.SelectNeighbourItemWithValue (-1);
+        public void SelectPreviousItem()
+        {
+            this.SelectNeighbourItemWithValue(-1);
         }
 
-        public void SelectNeighbourItemWithValue(int value) {
+        public void SelectNeighbourItemWithValue(int value)
+        {
             this.SelectedIndex = this.SelectedIndex + value;
         }
         #endregion
 
         #region Cells
-        public static Class CellClass {
-            get {
+        public static Class CellClass
+        {
+            get
+            {
                 return new Class("ACSidebarItemCell");
             }
         }
 
-        private ACSidebarItemCell SelectedItem {
-            get {
+        private ACSidebarItemCell SelectedItem
+        {
+            get
+            {
                 return (ACSidebarItemCell)this.matrix.SelectedCell;
             }
-            set {
-                this.SelectedIndex = Array.IndexOf (this.matrix.Cells, value);
+            set
+            {
+                this.SelectedIndex = Array.IndexOf(this.matrix.Cells, value);
             }
         }
 
-        public int SelectedIndex {
-            get {
+        public int SelectedIndex
+        {
+            get
+            {
                 ACSidebarItemCell cell = this.SelectedItem;
-                return Array.IndexOf (this.matrix.Cells, cell);
+                return Array.IndexOf(this.matrix.Cells, cell);
             }
-            set {
-                if (value < this.matrix.Cells.Length) {
-                    this.matrix.SelectCell (this.matrix.Cells [value]);
+            set
+            {
+                if (value < this.matrix.Cells.Length)
+                {
+                    this.matrix.SelectCell(this.matrix.Cells[value]);
 
                     // Again, no action
-                    this.MatrixCallback(this);
+                    onMatrixCallback(this, null);
                 }
             }
         }
 
-        private CGSize CellSize {
-            get {
+        private CGSize CellSize
+        {
+            get
+            {
                 return this.matrix.CellSize;
             }
-            set {
+            set
+            {
                 this.matrix.CellSize = value;
             }
         }
 
-        public bool AllowsEmptySelection {
-            get {
+        public bool AllowsEmptySelection
+        {
+            get
+            {
                 return this.matrix.AllowsEmptySelection;
             }
-            set {
+            set
+            {
                 this.matrix.AllowsEmptySelection = value;
 
                 // If empty selection is not allowed, we select the first item
-                if (!value && this.SelectedIndex == -1) {
+                if (!value && this.SelectedIndex == -1)
+                {
                     this.SelectedIndex = 0;
                 }
             }
         }
 
-        public ACSidebarItemCell AddItem(NSImage image, NSObject target, Selector sel) {
+        public ACSidebarItemCell AddItem(NSImage image, NSObject target, Selector sel)
+        {
             ACSidebarItemCell cell = new ACSidebarItemCell(image);
             cell.Target = target;
             cell.Action = sel;
@@ -200,92 +231,109 @@ namespace ACSidebar
             return cell;
         }
 
-        public ACSidebarItemCell AddItem(NSImage image, NSImage alternateImage, NSObject target, Selector sel) {
-            ACSidebarItemCell cell = this.AddItem (image, target, sel);
+        public ACSidebarItemCell AddItem(NSImage image, NSImage alternateImage, NSObject target, Selector sel)
+        {
+            ACSidebarItemCell cell = this.AddItem(image, target, sel);
             cell.AlternateImage = alternateImage;
 
             return cell;
         }
 
-        public ACSidebarItemCell AddItem(NSImage image) {
-            ACSidebarItemCell cell = new ACSidebarItemCell (image);
-            this.AddCell (cell);
+        public ACSidebarItemCell AddItem(NSImage image)
+        {
+            ACSidebarItemCell cell = new ACSidebarItemCell(image);
+            this.AddCell(cell);
 
             return cell;
         }
 
-        public ACSidebarItemCell AddItem(NSImage image, NSImage alternateImage) {
-            ACSidebarItemCell cell = this.AddItem (image);
+        public ACSidebarItemCell AddItem(NSImage image, NSImage alternateImage)
+        {
+            ACSidebarItemCell cell = this.AddItem(image);
             cell.AlternateImage = alternateImage;
 
             return cell;
         }
 
-        private void AddCell(ACSidebarItemCell cell) {
-            this.matrix.AddRowWithCells(new NSCell[]{ cell });
-            this.ResizeMatrix (null);
+        public ACSidebarItemCell AddItem(NSImage image, EventHandler onSelect)
+        {
+            ACSidebarItemCell cell = this.AddItem(image);
+            cell.itemSelected += onSelect;
+
+            return cell;
+        }
+
+        private void AddCell(ACSidebarItemCell cell)
+        {
+            this.matrix.AddRowWithCells(new NSCell[] { cell });
+            this.ResizeMatrix(null);
         }
         #endregion
 
         #region Resizing
-        public override CGRect Frame {
-            get {
+        public override CGRect Frame
+        {
+            get
+            {
                 return base.Frame;
             }
-            set {
+            set
+            {
                 base.Frame = value;
-                this.ResizeMatrix (null);
+                this.ResizeMatrix(null);
             }
         }
 
-        public void ResizeMatrix(NSNotification notification) {
-            this.matrix.SizeToCells ();
+        public void ResizeMatrix(NSNotification notification)
+        {
+            this.matrix.SizeToCells();
 
             CGRect newSize = this.matrix.Frame;
 
-			if (this.EnclosingScrollView == null) {
-				return;
-			}
+            if (this.EnclosingScrollView == null)
+            {
+                return;
+            }
 
-            if (this.EnclosingScrollView.ContentView.Frame.Size.Height > newSize.Size.Height) {
-                CGSize tmpSize = new CGSize (newSize.Size.Width, this.EnclosingScrollView.ContentView.Frame.Size.Height);
+            if (this.EnclosingScrollView.ContentView.Frame.Size.Height > newSize.Size.Height)
+            {
+                CGSize tmpSize = new CGSize(newSize.Size.Width, this.EnclosingScrollView.ContentView.Frame.Size.Height);
                 newSize.Size = tmpSize;
             }
 
-            this.matrix.SetFrameSize (newSize.Size);
-            this.SetFrameSize (newSize.Size);
+            this.matrix.SetFrameSize(newSize.Size);
+            this.SetFrameSize(newSize.Size);
         }
         #endregion
-            
+
         #region ACSidebar Target Action
-        [Action("MatrixCallback:")]
-        public void MatrixCallback(NSObject sender) {
-            if (this.Target == null) {
-                return;
-            }
-            if (this.Target.RespondsToSelector(this.Action)) {
-                this.Target.PerformSelector (this.Action, this);
-            }
-            else {
-                this.SelectedItem.Target.PerformSelector (this.SelectedItem.Action, this.SelectedItem);
-            }
+
+        public void onMatrixCallback(object sender, EventArgs e)
+        {
+            this.SelectedItem.OnItemSelected(e);
         }
 
-        private NSObject Target {
-            get {
+        private NSObject Target
+        {
+            get
+            {
                 return this._target;
             }
-            set {
+            set
+            {
                 this.matrix.Target = this;
                 this._target = value;
             }
         }
 
-        private Selector Action {
-            get {
+        private Selector Action
+        {
+            get
+            {
                 return this._action;
             }
-            set {
+            set
+            {
                 this.matrix.Action = value;
                 this._action = value;
             }

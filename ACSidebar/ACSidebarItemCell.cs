@@ -23,6 +23,14 @@ namespace ACSidebar
             }
         }
 
+        public event EventHandler itemSelected;
+        public virtual void OnItemSelected(EventArgs e) {
+            EventHandler handler = itemSelected;
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
         public ACSidebarItemCell (NSImage image) : base (image)
         {}
 
