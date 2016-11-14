@@ -45,6 +45,30 @@
     <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Mac' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Mac\Debug</OutputPath>
+    <DefineConstants></DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <HttpClientHandler></HttpClientHandler>
+    <TlsProvider></TlsProvider>
+    <LinkMode></LinkMode>
+    <XamMacArch></XamMacArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Mac' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Mac\Release</OutputPath>
+    <DefineConstants></DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <HttpClientHandler></HttpClientHandler>
+    <TlsProvider></TlsProvider>
+    <LinkMode></LinkMode>
+    <XamMacArch></XamMacArch>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
